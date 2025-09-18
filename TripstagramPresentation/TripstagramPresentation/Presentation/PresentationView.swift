@@ -92,12 +92,14 @@ private struct VideoPostCell: View {
 
     init(post: VideoPost) {
         self.post = post
-        self._player = State(wrappedValue: AVPlayer(url: post.url))
+        let player = AVPlayer(url: post.url)
+        player.isMuted = true
+        self._player = State(wrappedValue: player)
     }
     
     var body: some View {
         VStack(spacing: 8) {
-            VideoPlayer(player: player)
+            CustomVideoPlayer(player: player)
                 .frame(maxWidth: .infinity)
                 .aspectRatio(1, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -121,6 +123,12 @@ private struct VideoPostCell: View {
                 Spacer()
             }
         }
+        .onAppear {
+            player.play()
+        }
+        .onDisappear {
+            player.pause()
+        }
     }
 }
 
@@ -138,6 +146,48 @@ struct VideoPost: Post {
     let id: UUID
     let url: URL
 }
+
+private struct CustomVideoPlayer: UIViewRepresentable {
+    let player: AVPlayer
+
+    func makeUIView(context: Context) -> PlayerUIView {
+        PlayerUIView(player: player)
+    }
+
+    func updateUIView(_ uiView: PlayerUIView, context: Context) {
+        // This view does not need to be updated.
+    }
+}
+
+private class PlayerUIView: UIView {
+    private var playerLayer: AVPlayerLayer {
+        layer as! AVPlayerLayer
+    }
+
+    var player: AVPlayer? {
+        get {
+            playerLayer.player
+        }
+        set {
+            playerLayer.player = newValue
+        }
+    }
+
+    override static var layerClass: AnyClass {
+        AVPlayerLayer.self
+    }
+    
+    init(player: AVPlayer) {
+        super.init(frame: .zero)
+        self.player = player
+        playerLayer.videoGravity = .resizeAspect
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 
 #Preview {
     PresentationView(viewModel: PresentationViewModel())
