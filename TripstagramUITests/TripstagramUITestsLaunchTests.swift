@@ -1,10 +1,3 @@
-//
-//  TripstagramUITestsLaunchTests.swift
-//  TripstagramUITests
-//
-//  Created by Oleksandr Orlov on 18/9/25.
-//
-
 import XCTest
 
 final class TripstagramUITestsLaunchTests: XCTestCase {

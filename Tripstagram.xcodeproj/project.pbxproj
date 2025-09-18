@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		558E8D112E7C4C0C007487AB /* TripstagramPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 558E8D102E7C4C0C007487AB /* TripstagramPresentation */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		558E8CB72E7C49D4007487AB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -27,6 +31,7 @@
 		558E8CA72E7C49D2007487AB /* Tripstagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tripstagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		558E8CB62E7C49D4007487AB /* TripstagramTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TripstagramTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		558E8CC02E7C49D4007487AB /* TripstagramUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TripstagramUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		558E8CE12E7C4A90007487AB /* TripstagramPresentation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = TripstagramPresentation; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -52,6 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				558E8D112E7C4C0C007487AB /* TripstagramPresentation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +84,8 @@
 				558E8CA92E7C49D2007487AB /* Tripstagram */,
 				558E8CB92E7C49D4007487AB /* TripstagramTests */,
 				558E8CC32E7C49D4007487AB /* TripstagramUITests */,
+				558E8CE12E7C4A90007487AB /* TripstagramPresentation */,
+				558E8D0F2E7C4C0C007487AB /* Frameworks */,
 				558E8CA82E7C49D2007487AB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -90,6 +98,13 @@
 				558E8CC02E7C49D4007487AB /* TripstagramUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		558E8D0F2E7C4C0C007487AB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -112,6 +127,7 @@
 			);
 			name = Tripstagram;
 			packageProductDependencies = (
+				558E8D102E7C4C0C007487AB /* TripstagramPresentation */,
 			);
 			productName = Tripstagram;
 			productReference = 558E8CA72E7C49D2007487AB /* Tripstagram.app */;
@@ -395,9 +411,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9HC298K985;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -410,8 +426,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sync.luximetr.Tripstagram;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sync.luximetr.tripstagram;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -427,9 +444,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 9HC298K985;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -442,8 +459,9 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.sync.luximetr.Tripstagram;
+				PRODUCT_BUNDLE_IDENTIFIER = com.sync.luximetr.tripstagram;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -578,6 +596,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		558E8D102E7C4C0C007487AB /* TripstagramPresentation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripstagramPresentation;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 558E8C9F2E7C49D2007487AB /* Project object */;
 }

@@ -1,10 +1,3 @@
-//
-//  TripstagramTests.swift
-//  TripstagramTests
-//
-//  Created by Oleksandr Orlov on 18/9/25.
-//
-
 import Testing
 @testable import Tripstagram
 
