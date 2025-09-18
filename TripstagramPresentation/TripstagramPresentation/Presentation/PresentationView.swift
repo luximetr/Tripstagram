@@ -8,10 +8,10 @@ public struct PresentationView: View {
     @StateObject var viewModel: PresentationViewModel
     
     @State var posts: [any Post] = [
-        ImagePost(id: UUID(), url: URL(string: "https://i.imgur.com/96vtL.png")!),
-        ImagePost(id: UUID(), url: URL(string: "https://i.imgur.com/UUiBY.png")!),
-        VideoPost(id: UUID(), url: URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!),
-        VideoPost(id: UUID(), url: URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4")!)
+        ImageOnlyPost(id: UUID(), source: .init(url: URL(string: "https://i.imgur.com/96vtL.png")!)),
+        ImageOnlyPost(id: UUID(), source: .init(url: URL(string: "https://i.imgur.com/UUiBY.png")!)),
+        VideoOnlyPost(id: UUID(), source: .init(url: URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!)),
+        VideoOnlyPost(id: UUID(), source: .init(url: URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4")!))
     ]
     
     public init(viewModel: PresentationViewModel) {
@@ -20,9 +20,9 @@ public struct PresentationView: View {
     
     public var body: some View {
         List(posts, id: \.id) { post in
-            if let imagePost = post as? ImagePost {
+            if let imagePost = post as? ImageOnlyPost {
                 ImagePostCell(post: imagePost)
-            } else if let video = post as? VideoPost {
+            } else if let video = post as? VideoOnlyPost {
                 VideoPostCell(post: video)
             } else {
                 Text("Unsupported post type")
@@ -33,11 +33,11 @@ public struct PresentationView: View {
 }
 
 private struct ImagePostCell: View {
-    let post: ImagePost
+    let post: ImageOnlyPost
     
     var body: some View {
         VStack {
-            AsyncImage(url: post.url) { phase in
+            AsyncImage(url: post.source.url) { phase in
                 switch phase {
                 case .empty:
                     ZStack {
@@ -87,12 +87,12 @@ private struct ImagePostCell: View {
 }
 
 private struct VideoPostCell: View {
-    let post: VideoPost
+    let post: VideoOnlyPost
     @State private var player: AVPlayer
 
-    init(post: VideoPost) {
+    init(post: VideoOnlyPost) {
         self.post = post
-        let player = AVPlayer(url: post.url)
+        let player = AVPlayer(url: post.source.url)
         player.isMuted = true
         self._player = State(wrappedValue: player)
     }
@@ -137,13 +137,30 @@ protocol Post: Identifiable {
     var id: UUID { get }
 }
 
-struct ImagePost: Post {
+struct ImageOnlyPost: Post {
     let id: UUID
+    let source: PostImageSource
+}
+
+struct VideoOnlyPost: Post {
+    let id: UUID
+    let source: PostVideoSource
+}
+
+struct MultiSourcePost: Post {
+    let id: UUID
+    let sources: [PostSource]
+}
+
+protocol PostSource {
+    
+}
+
+struct PostImageSource: PostSource {
     let url: URL
 }
 
-struct VideoPost: Post {
-    let id: UUID
+struct PostVideoSource: PostSource {
     let url: URL
 }
 
