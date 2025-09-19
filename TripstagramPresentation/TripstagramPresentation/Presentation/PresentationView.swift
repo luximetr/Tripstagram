@@ -243,38 +243,6 @@ private struct MultiSourceCarouselPostCell: View {
     }
 }
 
-
-protocol Post: Identifiable {
-    var id: UUID { get }
-}
-
-struct ImageOnlyPost: Post {
-    let id: UUID
-    let source: PostImageSource
-}
-
-struct VideoOnlyPost: Post {
-    let id: UUID
-    let source: PostVideoSource
-}
-
-struct MultiSourcePost: Post {
-    let id: UUID
-    let sources: [PostSource]
-}
-
-protocol PostSource {
-    
-}
-
-struct PostImageSource: PostSource {
-    let url: URL
-}
-
-struct PostVideoSource: PostSource {
-    let url: URL
-}
-
 private struct CustomVideoPlayer: UIViewRepresentable {
     let player: AVPlayer
 
