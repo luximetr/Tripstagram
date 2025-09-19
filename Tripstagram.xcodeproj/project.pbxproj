@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		551FFBFC2E7D9E61007ED5FA /* TripstagramStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 551FFBFB2E7D9E61007ED5FA /* TripstagramStorage */; };
 		558E8D112E7C4C0C007487AB /* TripstagramPresentation in Frameworks */ = {isa = PBXBuildFile; productRef = 558E8D102E7C4C0C007487AB /* TripstagramPresentation */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		551FFBFA2E7D9E51007ED5FA /* TripstagramStorage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = TripstagramStorage; sourceTree = "<group>"; };
 		558E8CA72E7C49D2007487AB /* Tripstagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tripstagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		558E8CB62E7C49D4007487AB /* TripstagramTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TripstagramTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		558E8CC02E7C49D4007487AB /* TripstagramUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TripstagramUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -58,6 +60,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				558E8D112E7C4C0C007487AB /* TripstagramPresentation in Frameworks */,
+				551FFBFC2E7D9E61007ED5FA /* TripstagramStorage in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +88,7 @@
 				558E8CB92E7C49D4007487AB /* TripstagramTests */,
 				558E8CC32E7C49D4007487AB /* TripstagramUITests */,
 				558E8CE12E7C4A90007487AB /* TripstagramPresentation */,
+				551FFBFA2E7D9E51007ED5FA /* TripstagramStorage */,
 				558E8D0F2E7C4C0C007487AB /* Frameworks */,
 				558E8CA82E7C49D2007487AB /* Products */,
 			);
@@ -128,6 +132,7 @@
 			name = Tripstagram;
 			packageProductDependencies = (
 				558E8D102E7C4C0C007487AB /* TripstagramPresentation */,
+				551FFBFB2E7D9E61007ED5FA /* TripstagramStorage */,
 			);
 			productName = Tripstagram;
 			productReference = 558E8CA72E7C49D2007487AB /* Tripstagram.app */;
@@ -598,6 +603,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		551FFBFB2E7D9E61007ED5FA /* TripstagramStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TripstagramStorage;
+		};
 		558E8D102E7C4C0C007487AB /* TripstagramPresentation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TripstagramPresentation;
