@@ -66,7 +66,11 @@ class SQLiteDatabase {
     func create() throws {
         let databaseConnection = try mainQueueWriteConnection()
         do {
-            
+            try setupJournalMode(databaseConnection: databaseConnection)
+            try setupSynchronousMode(databaseConnection: databaseConnection)
+            try setupWALAutoCheckpoint(databaseConnection: databaseConnection)
+            try beginTransaction(databaseConnection: databaseConnection)
+            try imageOnlyPostTable().create(databaseConnection: databaseConnection)
             try commitTransaction(databaseConnection: databaseConnection)
         } catch let transactionError {
             do {
@@ -77,6 +81,38 @@ class SQLiteDatabase {
                 let error = Error("Unable to rollback transaction\n\(transactionError)\n\(rollbackError)")
                 throw error
             }
+        }
+    }
+    
+    // MARK: - Setup
+    
+    private func setupJournalMode(databaseConnection: OpaquePointer) throws {
+        do {
+            let statement = "PRAGMA journal_mode=WAL;"
+            try sqlite3Exec(databaseConnection: databaseConnection, statement)
+        } catch let execError {
+            let error = Error("Error setting DB journal_mode: \(execError)")
+            throw error
+        }
+    }
+    
+    private func setupSynchronousMode(databaseConnection: OpaquePointer) throws {
+        do {
+            let statement = "PRAGMA synchronous=NORMAL;"
+            try sqlite3Exec(databaseConnection: databaseConnection, statement)
+        } catch let execError {
+            let error = Error("Error setting DB synchronous: \(execError)")
+            throw error
+        }
+    }
+    
+    private func setupWALAutoCheckpoint(databaseConnection: OpaquePointer) throws {
+        do {
+            let statement = "PRAGMA wal_autocheckpoint=1000;"
+            try sqlite3Exec(databaseConnection: databaseConnection, statement)
+        } catch let execError {
+            let error = Error("Error setting DB wal_autocheckpoint: \(execError)")
+            throw error
         }
     }
     
@@ -120,5 +156,14 @@ class SQLiteDatabase {
     
     // MARK: - Tables
     
-    
+    private var _imageOnlyPostTable: ImageOnlyPostSQLiteTable?
+    func imageOnlyPostTable() throws -> ImageOnlyPostSQLiteTable {
+        if let imageOnlyPostTable = _imageOnlyPostTable {
+            return imageOnlyPostTable
+        } else {
+            let imageOnlyPostTable = ImageOnlyPostSQLiteTable()
+            _imageOnlyPostTable = imageOnlyPostTable
+            return imageOnlyPostTable
+        }
+    }
 }

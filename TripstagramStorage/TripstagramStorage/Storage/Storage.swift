@@ -11,6 +11,7 @@ public class Storage {
     }
     
     public func initialize() throws {
+        try sqliteDatabase().create()
     }
     
     // MARK: - File manager
