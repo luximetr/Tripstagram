@@ -8,13 +8,23 @@ public class Storage {
     public init() {
         self.sqlDatabaseFilename = "TripstagramDatabase"
         self.fileManager = FileManager.default
+        self.userDefaultsRepository = UserDefaultsRepository(userDefaults: UserDefaults.standard)
     }
     
     public func initialize() throws {
-        try sqliteDatabase().create()
+        let storageVersionRaw = userDefaultsRepository.storageVersion()
+        if storageVersionRaw == nil {
+            try sqliteDatabase().create()
+            let migratedToVersion: Storage.Version = .latest
+            userDefaultsRepository.setStorageVersion(migratedToVersion.stringValue)
+        }
     }
     
-    // MARK: - File manager
+    // MARK: - UserDefaults
+    
+    let userDefaultsRepository: UserDefaultsRepository
+    
+    // MARK: - FileManager
     
     let fileManager: FileManager
     
