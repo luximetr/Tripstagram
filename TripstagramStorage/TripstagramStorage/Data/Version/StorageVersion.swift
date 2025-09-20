@@ -1,10 +1,9 @@
 import Foundation
 
-extension Storage {
-enum Version: Int {
+enum StorageVersion: Int {
     case v1_0_0
     
-    static var latest: Version {
+    static var latest: StorageVersion {
         return .v1_0_0
     }
     
@@ -20,5 +19,4 @@ enum Version: Int {
         case .v1_0_0: return "1.0.0"
         }
     }
-}
 }

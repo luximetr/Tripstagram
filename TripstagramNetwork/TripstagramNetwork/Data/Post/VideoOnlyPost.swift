@@ -1,6 +1,7 @@
 import Foundation
 
 public struct VideoOnlyPost: Post {
-    public let id: UUID
+    public let id: String
+    public let postedAt: Date
     public let source: PostVideoSource
 }

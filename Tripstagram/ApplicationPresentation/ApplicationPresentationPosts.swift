@@ -1,11 +1,12 @@
 import Foundation
 import TripstagramNetwork
+import TripstagramStorage
 
 extension ApplicationViewModel {
     
     func presentationGetPosts() async throws -> [any PresentationPost] {
         let networkPosts = try await network.getPosts()
-        cachePosts(networkPosts)
+        try cachePosts(networkPosts)
         let presentationPosts = try networkPosts.map({ try PostMapper.mapToPresentation($0) })
         return presentationPosts
     }
@@ -14,17 +15,22 @@ extension ApplicationViewModel {
         return []
     }
     
-    private func cachePosts(_ posts: [any NetworkPost]) {
-        let videoOnlyPosts = posts.compactMap({ $0 as? VideoOnlyPost })
-        if let videoOnlyPost = videoOnlyPosts.first {
-            Task {
-                do {
-                    let url = try await network.downloadFile(remoteURL: videoOnlyPost.source.url)
-                    print(url)
-                } catch {
-                    print(error)
-                }
-            }
+    private func cachePosts(_ posts: [any NetworkPost]) throws {
+        let storagePosts = try posts.map({ try PostMapper.mapToStorage($0) })
+        Task {
+            try await storage.insertPosts(storagePosts)
         }
+//        storage.savePosts(posts)
+//        let videoOnlyPosts = posts.compactMap({ $0 as? VideoOnlyPost })
+//        if let videoOnlyPost = videoOnlyPosts.first {
+//            Task {
+//                do {
+//                    let url = try await network.downloadFile(remoteURL: videoOnlyPost.source.url)
+//                    print(url)
+//                } catch {
+//                    print(error)
+//                }
+//            }
+//        }
     }
 }

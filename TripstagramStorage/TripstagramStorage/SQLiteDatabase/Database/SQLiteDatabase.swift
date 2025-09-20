@@ -16,6 +16,22 @@ class SQLiteDatabase {
     
     // MARK: - Queues
     
+    private var _backgroundQueueReadConnection: OpaquePointer?
+    func backgroundQueueReadConnection() throws -> OpaquePointer {
+        do {
+            if let backgroundQueueReadConnection = _backgroundQueueReadConnection {
+                return backgroundQueueReadConnection
+            } else {
+                let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_SHAREDCACHE | SQLITE_OPEN_FULLMUTEX
+                let backgroundQueueReadConnection = try sqlite3OpenV2(databaseURL.path, flags: flags, zVfs: nil)
+                _backgroundQueueReadConnection = backgroundQueueReadConnection
+                return backgroundQueueReadConnection
+            }
+        } catch {
+            throw Error("Error\n\(error)")
+        }
+    }
+    
     private var _backgroundQueueWriteConnection: OpaquePointer?
     func backgroundQueueWriteConnection() throws -> OpaquePointer {
         do {
@@ -164,6 +180,19 @@ class SQLiteDatabase {
             let imageOnlyPostTable = ImageOnlyPostSQLiteTable()
             _imageOnlyPostTable = imageOnlyPostTable
             return imageOnlyPostTable
+        }
+    }
+    
+    // MARK: - Queries
+    
+    private var _getPostsQuery: GetPostsSQLiteQuery?
+    func getPostsQuery() throws -> GetPostsSQLiteQuery {
+        if let getPostsQuery = _getPostsQuery {
+            return getPostsQuery
+        } else {
+            let getPostsQuery = GetPostsSQLiteQuery()
+            _getPostsQuery = getPostsQuery
+            return getPostsQuery
         }
     }
 }

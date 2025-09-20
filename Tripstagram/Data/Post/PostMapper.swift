@@ -1,17 +1,11 @@
 import Foundation
 import TripstagramPresentation
 import TripstagramNetwork
-
-typealias PresentationPost = TripstagramPresentation.Post
-typealias PresentationImageOnlyPost = TripstagramPresentation.ImageOnlyPost
-typealias PresentationVideoOnlyPost = TripstagramPresentation.VideoOnlyPost
-typealias PresentationMultiSourcePost = TripstagramPresentation.MultiSourcePost
-typealias NetworkPost = TripstagramNetwork.Post
-typealias NetworkImageOnlyPost = TripstagramNetwork.ImageOnlyPost
-typealias NetworkVideoOnlyPost = TripstagramNetwork.VideoOnlyPost
-typealias NetworkMultiSourcePost = TripstagramNetwork.MultiSourcePost
+import TripstagramStorage
 
 class PostMapper {
+    
+    // MARK: - Presentation
     
     static func mapToPresentation(_ networkPost: any NetworkPost) throws -> any PresentationPost {
         switch networkPost {
@@ -51,4 +45,60 @@ class PostMapper {
         return presentationPost
     }
     
+    // MARK: - Storage
+    
+    static func mapToStorage(_ networkPost: any NetworkPost) throws -> any StoragePost {
+        switch networkPost {
+        case let imageOnlyPost as NetworkImageOnlyPost:
+            return mapToStorage(imageOnlyPost)
+        case let videoOnlyPost as NetworkVideoOnlyPost:
+            return mapToStorage(videoOnlyPost)
+        case let multiSourcePost as NetworkMultiSourcePost:
+            return try mapToStorage(multiSourcePost)
+        default:
+            throw Error("Unsupported post type")
+        }
+    }
+    
+    private static func mapToStorage(_ networkPost: NetworkImageOnlyPost) -> StorageImageOnlyPost {
+        let storagePost = StorageImageOnlyPost(
+            id: networkPost.id,
+            postedAt: networkPost.postedAt,
+            source: PostSourceMapper.mapToStorage(networkPost.source)
+        )
+        return storagePost
+    }
+    
+    private static func mapToStorage(_ networkPost: NetworkVideoOnlyPost) -> StorageVideoOnlyPost {
+        let storagePost = StorageVideoOnlyPost(
+            id: networkPost.id,
+            postedAt: networkPost.postedAt,
+            source: PostSourceMapper.mapToStorage(networkPost.source)
+        )
+        return storagePost
+    }
+    
+    private static func mapToStorage(_ networkPost: NetworkMultiSourcePost) throws -> StorageMultiSourcePost {
+        let presentationSources = try networkPost.sources.map({ try PostSourceMapper.mapToStorage($0) })
+        let storagePost = StorageMultiSourcePost(
+            id: networkPost.id,
+            postedAt: networkPost.postedAt,
+            sources: presentationSources
+        )
+        return storagePost
+    }
+    
 }
+
+typealias PresentationPost = TripstagramPresentation.Post
+typealias PresentationImageOnlyPost = TripstagramPresentation.ImageOnlyPost
+typealias PresentationVideoOnlyPost = TripstagramPresentation.VideoOnlyPost
+typealias PresentationMultiSourcePost = TripstagramPresentation.MultiSourcePost
+typealias NetworkPost = TripstagramNetwork.Post
+typealias NetworkImageOnlyPost = TripstagramNetwork.ImageOnlyPost
+typealias NetworkVideoOnlyPost = TripstagramNetwork.VideoOnlyPost
+typealias NetworkMultiSourcePost = TripstagramNetwork.MultiSourcePost
+typealias StoragePost = TripstagramStorage.Post
+typealias StorageImageOnlyPost = TripstagramStorage.ImageOnlyPost
+typealias StorageVideoOnlyPost = TripstagramStorage.VideoOnlyPost
+typealias StorageMultiSourcePost = TripstagramStorage.MultiSourcePost

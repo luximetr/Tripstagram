@@ -15,7 +15,7 @@ public class Storage {
         let storageVersionRaw = userDefaultsRepository.storageVersion()
         if storageVersionRaw == nil {
             try sqliteDatabase().create()
-            let migratedToVersion: Storage.Version = .latest
+            let migratedToVersion: StorageVersion = .latest
             userDefaultsRepository.setStorageVersion(migratedToVersion.stringValue)
         }
     }
@@ -76,6 +76,84 @@ public class Storage {
             }
         } catch {
             throw Error("Error\n\(error)")
+        }
+    }
+    
+    // MARK: - Queues
+    
+    private lazy var mainQueue = DispatchQueue.main
+    private lazy var backgroundReadQueue = DispatchQueue(label: "com.storage.tripstagram.background.read.queue", qos: .userInitiated, attributes: .concurrent)
+    private lazy var backgroundWriteQueue = DispatchQueue(label: "com.storage.tripstagram.background.write.queue", qos: .userInitiated)
+    
+    func performMainThreadReadTask<T>(_ action: (OpaquePointer) throws -> T) throws -> T {
+        if Thread.isMainThread {
+            let databaseConnection = try sqliteDatabase().mainQueueReadConnection()
+            return try action(databaseConnection)
+        } else {
+            return try mainQueue.sync {
+                let databaseConnection = try sqliteDatabase().mainQueueReadConnection()
+                return try action(databaseConnection)
+            }
+        }
+    }
+    
+    func performBackgroundReadTask<T>(_ action: @escaping (OpaquePointer) throws -> T) async throws -> T {
+        return try await withCheckedThrowingContinuation { continuation in
+            backgroundReadQueue.async { [weak self] in
+                guard let self = self else {
+                    continuation.resume(throwing: Error("Cannot unwrap weak self"))
+                    return
+                }
+                do {
+                    let databaseConnection = try self.sqliteDatabase().backgroundQueueReadConnection()
+                    let result = try action(databaseConnection)
+                    continuation.resume(returning: result)
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    func performBackgroundWriteTask<T>(_ action: @escaping (OpaquePointer) throws -> T) async throws -> T {
+        return try await withCheckedThrowingContinuation { continuation in
+            backgroundWriteQueue.async { [weak self] in
+                guard let self = self else {
+                    continuation.resume(throwing: Error("Cannot unwrap weak self"))
+                    return
+                }
+                do {
+                    let databaseConnection = try self.sqliteDatabase().backgroundQueueWriteConnection()
+                    let result = try action(databaseConnection)
+                    continuation.resume(returning: result)
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    // MARK: - Transaction
+    
+    public func performInBackgroundWriteTransaction<T>(_ actions: @escaping (StorageTransaction) throws -> T) async throws -> T {
+        return try await performBackgroundWriteTask { [weak self] databaseConnection in
+            guard let self = self else { throw Error("Cannot unwrap weak self") }
+            let storageTransaction = StorageTransaction(databaseConnection: databaseConnection)
+            do {
+                try self.sqliteDatabase().beginTransaction(databaseConnection: databaseConnection)
+                let result = try actions(storageTransaction)
+                try self.sqliteDatabase().commitTransaction(databaseConnection: databaseConnection)
+                return result
+            } catch let transactionError {
+                do {
+                    try self.sqliteDatabase().rollbackTransaction(databaseConnection: databaseConnection)
+                    let error = Error("Unable to commit transaction\n\(transactionError)")
+                    throw error
+                } catch let rollbackError {
+                    let error = Error("Unable to rollback transaction\n\(transactionError)\n\(rollbackError)")
+                    throw error
+                }
+            }
         }
     }
 }
