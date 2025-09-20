@@ -2,6 +2,8 @@ import Foundation
 
 public class Network {
     
+    // MARK: - URL session
+    
     private let urlSession: URLSession
     
     // MARK: - Initialization
@@ -9,6 +11,8 @@ public class Network {
     public init() {
         urlSession = URLSession.shared
     }
+    
+    // MARK: - Posts
     
     public func getPosts() async throws -> [any Post] {
         return try [
@@ -32,6 +36,13 @@ public class Network {
     private func createPostVideoSource(urlString: String) throws -> PostVideoSource {
         guard let url = URL(string: urlString) else { throw Error.invalidURL }
         return .init(url: url)
+    }
+    
+    // MARK: - Files
+    
+    public func downloadFile(remoteURL: URL) async throws -> URL {
+        let (tempURL, _) = try await urlSession.download(from: remoteURL)
+        return tempURL
     }
 }
 

@@ -32,5 +32,7 @@ class ApplicationViewModel: ObservableObject {
     
     private func initializePresentation() {
         presentationViewModel = PresentationViewModel()
+        weak var weakSelf = self
+        presentationViewModel.getPosts = weakSelf?.presentationGetPosts
     }
 }

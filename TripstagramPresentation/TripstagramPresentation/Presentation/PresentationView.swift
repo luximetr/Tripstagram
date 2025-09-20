@@ -7,17 +7,7 @@ public struct PresentationView: View {
     
     @StateObject var viewModel: PresentationViewModel
     
-    @State var posts: [any Post] = [
-        ImageOnlyPost(id: UUID(), source: .init(url: URL(string: "https://i.imgur.com/96vtL.png")!)),
-        ImageOnlyPost(id: UUID(), source: .init(url: URL(string: "https://i.imgur.com/UUiBY.png")!)),
-        MultiSourcePost(id: UUID(), sources: [
-            PostImageSource(url: URL(string: "https://i.imgur.com/ZXs3p5F.png")!),
-            PostVideoSource(url: URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4")!),
-            PostImageSource(url: URL(string: "https://i.imgur.com/h5T2a8G.jpeg")!)
-        ]),
-        VideoOnlyPost(id: UUID(), source: .init(url: URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")!)),
-        VideoOnlyPost(id: UUID(), source: .init(url: URL(string: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4")!))
-    ]
+    @State var posts: [any Post] = []
     
     public init(viewModel: PresentationViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -36,6 +26,15 @@ public struct PresentationView: View {
             }
         }
         .listStyle(.inset)
+        .task {
+            guard let getPosts = viewModel.getPosts else { return }
+            do {
+                let posts = try await getPosts()
+                self.posts = posts
+            } catch {
+                print(error)
+            }
+        }
     }
 }
 
