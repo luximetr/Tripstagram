@@ -48,7 +48,7 @@ class PostMapper {
     private static func mapToPresentation(_ storagePost: StorageImageOnlyPost) -> PresentationImageOnlyPost {
         let presentationPost = PresentationImageOnlyPost(
             id: storagePost.id,
-            source: PostSourceMapper.mapToPresentation(storagePostImageSource: storagePost.source)
+            source: .init(url: storagePost.attachmentURL)
         )
         return presentationPost
     }
@@ -89,7 +89,7 @@ class PostMapper {
         let storagePost = StorageImageOnlyPost(
             id: networkPost.id,
             postedAt: networkPost.postedAt,
-            source: PostSourceMapper.mapToStorage(networkPostImageSource: networkPost.source)
+            attachmentURL: networkPost.source.url
         )
         return storagePost
     }
@@ -125,5 +125,6 @@ typealias NetworkVideoOnlyPost = TripstagramNetwork.VideoOnlyPost
 typealias NetworkMultiSourcePost = TripstagramNetwork.MultiSourcePost
 typealias StoragePost = TripstagramStorage.Post
 typealias StorageImageOnlyPost = TripstagramStorage.ImageOnlyPost
+typealias StorageInsertingImageOnlyPost = TripstagramStorage.InsertingImageOnlyPost
 typealias StorageVideoOnlyPost = TripstagramStorage.VideoOnlyPost
 typealias StorageMultiSourcePost = TripstagramStorage.MultiSourcePost

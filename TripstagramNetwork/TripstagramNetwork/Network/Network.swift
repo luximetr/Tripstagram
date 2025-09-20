@@ -2,15 +2,15 @@ import Foundation
 
 public class Network {
     
-    // MARK: - URL session
-    
-    private let urlSession: URLSession
-    
-    // MARK: - Initialization
+    // MARK: - Init
     
     public init() {
         urlSession = URLSession.shared
     }
+    
+    // MARK: - URL session
+    
+    private let urlSession: URLSession
     
     // MARK: - Posts
     
@@ -40,9 +40,14 @@ public class Network {
     
     // MARK: - Files
     
-    public func downloadFile(remoteURL: URL) async throws -> URL {
-        let (tempURL, _) = try await urlSession.download(from: remoteURL)
-        return tempURL
+    public func downloadFile(remoteURL: URL) async throws -> DownloadedFile {
+        let (tempURL, response) = try await urlSession.download(from: remoteURL)
+        let file = DownloadedFile(
+            tempURL: tempURL,
+            mimeType: response.mimeType,
+            suggestedFilename: response.suggestedFilename
+        )
+        return file
     }
 }
 

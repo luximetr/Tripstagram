@@ -43,6 +43,11 @@ public class Storage {
         }
     }
     
+    var _postAttachmentsDirectoryURL: URL?
+    var _imageOnlyPostAttachmentsDirectoryURL: URL?
+    var _videoOnlyPostAttachmentsDirectoryURL: URL?
+    var _multiSourcePostAttachmentsDirectoryURL: URL?
+    
     // MARK: - SqliteDatabase
     
     private let sqlDatabaseFilename: String

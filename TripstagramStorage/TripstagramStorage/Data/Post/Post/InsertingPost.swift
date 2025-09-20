@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Post: Identifiable {
+public protocol InsertingPost {
     var id: String { get }
     var postedAt: Date { get }
 }

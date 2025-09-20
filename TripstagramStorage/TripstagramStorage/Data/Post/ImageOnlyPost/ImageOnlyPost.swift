@@ -3,11 +3,11 @@ import Foundation
 public struct ImageOnlyPost: Post {
     public let id: String
     public let postedAt: Date
-    public let source: PostImageSource
+    public let attachmentURL: URL
     
-    public init(id: String, postedAt: Date, source: PostImageSource) {
+    public init(id: String, postedAt: Date, attachmentURL: URL) {
         self.id = id
         self.postedAt = postedAt
-        self.source = source
+        self.attachmentURL = attachmentURL
     }
 }

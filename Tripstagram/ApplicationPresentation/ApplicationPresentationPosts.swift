@@ -17,10 +17,25 @@ extension ApplicationViewModel {
     }
     
     private func cachePosts(_ posts: [any NetworkPost]) throws {
-        let storagePosts = try posts.map({ try PostMapper.mapToStorage($0) })
-        Task {
-            try await storage.insertPosts(storagePosts)
+        for post in posts {
+            if let imageOnlyPost = post as? NetworkImageOnlyPost {
+                Task {
+                    do {
+                        let downloadedFile = try await network.downloadFile(remoteURL: imageOnlyPost.source.url)
+                        let storageDownloadedFile = DownloadedFileMapper.mapToStorage(networkDownloadedFile: downloadedFile)
+                        let storageImageOnlyPost = StorageInsertingImageOnlyPost(id: post.id, postedAt: post.postedAt, attachment: storageDownloadedFile)
+                        try await storage.insertPosts([storageImageOnlyPost])
+                    } catch {
+                        print(error)
+                    }
+                }
+            }
         }
+//        let storagePosts = try posts.map({ try PostMapper.mapToStorage($0) })
+//        
+//        Task {
+//            try await storage.insertPosts(storagePosts)
+//        }
 //        storage.savePosts(posts)
 //        let videoOnlyPosts = posts.compactMap({ $0 as? VideoOnlyPost })
 //        if let videoOnlyPost = videoOnlyPosts.first {
