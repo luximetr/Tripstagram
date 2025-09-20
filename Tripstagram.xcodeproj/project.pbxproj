@@ -32,6 +32,7 @@
 /* Begin PBXFileReference section */
 		551FFBFA2E7D9E51007ED5FA /* TripstagramStorage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = TripstagramStorage; sourceTree = "<group>"; };
 		551FFC0D2E7DA006007ED5FA /* TripstagramNetwork */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = TripstagramNetwork; sourceTree = "<group>"; };
+		551FFC3A2E7E9D87007ED5FA /* TripstagramSQLite3 */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = TripstagramSQLite3; sourceTree = "<group>"; };
 		558E8CA72E7C49D2007487AB /* Tripstagram.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tripstagram.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		558E8CB62E7C49D4007487AB /* TripstagramTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TripstagramTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		558E8CC02E7C49D4007487AB /* TripstagramUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TripstagramUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -92,6 +93,7 @@
 				558E8CC32E7C49D4007487AB /* TripstagramUITests */,
 				558E8CE12E7C4A90007487AB /* TripstagramPresentation */,
 				551FFBFA2E7D9E51007ED5FA /* TripstagramStorage */,
+				551FFC3A2E7E9D87007ED5FA /* TripstagramSQLite3 */,
 				551FFC0D2E7DA006007ED5FA /* TripstagramNetwork */,
 				558E8D0F2E7C4C0C007487AB /* Frameworks */,
 				558E8CA82E7C49D2007487AB /* Products */,

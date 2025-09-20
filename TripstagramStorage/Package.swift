@@ -13,9 +13,15 @@ let package = Package(
             targets: ["TripstagramStorage"]
         ),
     ],
+    dependencies: [
+        .package(path: "./TripstagramSQLite3")
+    ],
     targets: [
         .target(
             name: "TripstagramStorage",
+            dependencies: [
+                "TripstagramSQLite3"
+            ],
             path: "TripstagramStorage",
         ),
         .testTarget(
