@@ -12,6 +12,7 @@ extension ApplicationViewModel {
     }
     
     func presentationGetCachedPosts() async throws -> [any PresentationPost] {
+        let storagePosts = try await storage.fetchAllPosts()
         return []
     }
     

@@ -7,43 +7,62 @@ class PostSourceMapper {
     
     // MARK: - Presentation
     
-    static func mapToPresentation(_ postSource: any NetworkPostSource) throws -> any PresentationPostSource {
+    static func mapToPresentation(networkPostSource postSource: any NetworkPostSource) throws -> any PresentationPostSource {
         switch postSource {
         case let postImageSource as NetworkPostImageSource:
-            return mapToPresentation(postImageSource)
+            return mapToPresentation(networkPostImageSource: postImageSource)
         case let postVideoSource as NetworkPostVideoSource:
-            return mapToPresentation(postVideoSource)
+            return mapToPresentation(networkPostVideoSource: postVideoSource)
         default:
             throw Error("Unsupported post source")
         }
     }
     
-    static func mapToPresentation(_ postSource: NetworkPostImageSource) -> PresentationPostImageSource {
+    static func mapToPresentation(networkPostImageSource postSource: NetworkPostImageSource) -> PresentationPostImageSource {
         return .init(url: postSource.url)
     }
     
-    static func mapToPresentation(_ postSource: NetworkPostVideoSource) -> PresentationPostVideoSource {
+    static func mapToPresentation(networkPostVideoSource postSource: NetworkPostVideoSource) -> PresentationPostVideoSource {
+        return .init(url: postSource.url)
+    }
+    
+    static func mapToPresentation(storagePostSource postSource: any StoragePostSource) throws -> any PresentationPostSource {
+        switch postSource {
+        case let postImageSource as StoragePostImageSource:
+            return mapToPresentation(storagePostImageSource: postImageSource)
+        case let postVideoSource as StoragePostVideoSource:
+            return mapToPresentation(storagePostVideoSource: postVideoSource)
+        default:
+            throw Error("Unsupported post source")
+        }
+    }
+    
+    static func mapToPresentation(storagePostImageSource postSource: StoragePostImageSource) -> PresentationPostImageSource {
+        return .init(url: postSource.url)
+    }
+    
+    static func mapToPresentation(storagePostVideoSource postSource: StoragePostVideoSource) -> PresentationPostVideoSource {
         return .init(url: postSource.url)
     }
     
     // MARK: - Storage
     
-    static func mapToStorage(_ postSource: any NetworkPostSource) throws -> any StoragePostSource {
+    static func mapToStorage(networkPostSource postSource: any NetworkPostSource) throws -> any StoragePostSource {
         switch postSource {
         case let postImageSource as NetworkPostImageSource:
-            return mapToStorage(postImageSource)
+            return mapToStorage(networkPostImageSource: postImageSource)
         case let postVideoSource as NetworkPostVideoSource:
-            return mapToStorage(postVideoSource)
+            return mapToStorage(networkPostVideoSource: postVideoSource)
         default:
             throw Error("Unsupported post source")
         }
     }
     
-    static func mapToStorage(_ postSource: NetworkPostImageSource) -> StoragePostImageSource {
+    static func mapToStorage(networkPostImageSource postSource: NetworkPostImageSource) -> StoragePostImageSource {
         return .init(url: postSource.url)
     }
     
-    static func mapToStorage(_ postSource: NetworkPostVideoSource) -> StoragePostVideoSource {
+    static func mapToStorage(networkPostVideoSource postSource: NetworkPostVideoSource) -> StoragePostVideoSource {
         return .init(url: postSource.url)
     }
 }

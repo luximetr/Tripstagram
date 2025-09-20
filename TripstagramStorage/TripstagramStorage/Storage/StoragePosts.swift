@@ -40,9 +40,10 @@ extension Storage {
         
     }
     
-    public func fetchAllPosts() throws -> [any Post] {
-        return try performMainThreadReadTask { databaseConnection in
-            let postRows = try sqliteDatabase().getPostsQuery().selectAllOrderByPostedAt(databaseConnection: databaseConnection)
+    public func fetchAllPosts() async throws -> [any Post] {
+        return try await performBackgroundReadTask { [weak self] databaseConnection in
+            guard let self else { throw Error.unwrapWeakSelf }
+            let postRows = try self.sqliteDatabase().getPostsQuery().selectAllOrderByPostedAt(databaseConnection: databaseConnection)
             let posts = postRows.map({ PostMapper.mapToPost($0) })
             return posts
         }

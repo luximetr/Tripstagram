@@ -23,7 +23,7 @@ class PostMapper {
     private static func mapToPresentation(_ networkPost: NetworkImageOnlyPost) -> PresentationImageOnlyPost {
         let presentationPost = PresentationImageOnlyPost(
             id: networkPost.id,
-            source: PostSourceMapper.mapToPresentation(networkPost.source)
+            source: PostSourceMapper.mapToPresentation(networkPostImageSource: networkPost.source)
         )
         return presentationPost
     }
@@ -31,15 +31,40 @@ class PostMapper {
     private static func mapToPresentation(_ networkPost: NetworkVideoOnlyPost) -> PresentationVideoOnlyPost {
         let presentationPost = PresentationVideoOnlyPost(
             id: networkPost.id,
-            source: PostSourceMapper.mapToPresentation(networkPost.source)
+            source: PostSourceMapper.mapToPresentation(networkPostVideoSource: networkPost.source)
         )
         return presentationPost
     }
     
     private static func mapToPresentation(_ networkPost: NetworkMultiSourcePost) throws -> PresentationMultiSourcePost {
-        let presentationSources = try networkPost.sources.map({ try PostSourceMapper.mapToPresentation($0) })
+        let presentationSources = try networkPost.sources.map({ try PostSourceMapper.mapToPresentation(networkPostSource: $0) })
         let presentationPost = PresentationMultiSourcePost(
             id: networkPost.id,
+            sources: presentationSources
+        )
+        return presentationPost
+    }
+    
+    private static func mapToPresentation(_ storagePost: StorageImageOnlyPost) -> PresentationImageOnlyPost {
+        let presentationPost = PresentationImageOnlyPost(
+            id: storagePost.id,
+            source: PostSourceMapper.mapToPresentation(storagePostImageSource: storagePost.source)
+        )
+        return presentationPost
+    }
+    
+    private static func mapToPresentation(_ storagePost: StorageVideoOnlyPost) -> PresentationVideoOnlyPost {
+        let presentationPost = PresentationVideoOnlyPost(
+            id: storagePost.id,
+            source: PostSourceMapper.mapToPresentation(storagePostVideoSource: storagePost.source)
+        )
+        return presentationPost
+    }
+    
+    private static func mapToPresentation(_ storagePost: StorageMultiSourcePost) throws -> PresentationMultiSourcePost {
+        let presentationSources = try storagePost.sources.map({ try PostSourceMapper.mapToPresentation(storagePostSource: $0) })
+        let presentationPost = PresentationMultiSourcePost(
+            id: storagePost.id,
             sources: presentationSources
         )
         return presentationPost
@@ -64,7 +89,7 @@ class PostMapper {
         let storagePost = StorageImageOnlyPost(
             id: networkPost.id,
             postedAt: networkPost.postedAt,
-            source: PostSourceMapper.mapToStorage(networkPost.source)
+            source: PostSourceMapper.mapToStorage(networkPostImageSource: networkPost.source)
         )
         return storagePost
     }
@@ -73,13 +98,13 @@ class PostMapper {
         let storagePost = StorageVideoOnlyPost(
             id: networkPost.id,
             postedAt: networkPost.postedAt,
-            source: PostSourceMapper.mapToStorage(networkPost.source)
+            source: PostSourceMapper.mapToStorage(networkPostVideoSource: networkPost.source)
         )
         return storagePost
     }
     
     private static func mapToStorage(_ networkPost: NetworkMultiSourcePost) throws -> StorageMultiSourcePost {
-        let presentationSources = try networkPost.sources.map({ try PostSourceMapper.mapToStorage($0) })
+        let presentationSources = try networkPost.sources.map({ try PostSourceMapper.mapToStorage(networkPostSource: $0) })
         let storagePost = StorageMultiSourcePost(
             id: networkPost.id,
             postedAt: networkPost.postedAt,
