@@ -89,6 +89,8 @@ class SQLiteDatabase {
             try imageOnlyPostTable().create(databaseConnection: databaseConnection)
             try videoOnlyPostTable().create(databaseConnection: databaseConnection)
             try multiSourcePostTable().create(databaseConnection: databaseConnection)
+            try multiSourcePostImageAttachmentTable().create(databaseConnection: databaseConnection)
+            try multiSourcePostVideoAttachmentTable().create(databaseConnection: databaseConnection)
             try commitTransaction(databaseConnection: databaseConnection)
         } catch let transactionError {
             do {
@@ -204,6 +206,28 @@ class SQLiteDatabase {
             let multiSourcePostTable = MultiSourcePostSQLiteTable()
             _multiSourcePostTable = multiSourcePostTable
             return multiSourcePostTable
+        }
+    }
+    
+    private var _multiSourcePostImageAttachmentTable: MultiSourcePostImageAttachmentSQLiteTable?
+    func multiSourcePostImageAttachmentTable() throws -> MultiSourcePostImageAttachmentSQLiteTable {
+        if let multiSourcePostImageAttachmentTable = _multiSourcePostImageAttachmentTable {
+            return multiSourcePostImageAttachmentTable
+        } else {
+            let multiSourcePostImageAttachmentTable = MultiSourcePostImageAttachmentSQLiteTable()
+            _multiSourcePostImageAttachmentTable = multiSourcePostImageAttachmentTable
+            return multiSourcePostImageAttachmentTable
+        }
+    }
+    
+    private var _multiSourcePostVideoAttachmentTable: MultiSourcePostVideoAttachmentSQLiteTable?
+    func multiSourcePostVideoAttachmentTable() throws -> MultiSourcePostVideoAttachmentSQLiteTable {
+        if let multiSourcePostVideoAttachmentTable = _multiSourcePostVideoAttachmentTable {
+            return multiSourcePostVideoAttachmentTable
+        } else {
+            let multiSourcePostVideoAttachmentTable = MultiSourcePostVideoAttachmentSQLiteTable()
+            _multiSourcePostVideoAttachmentTable = multiSourcePostVideoAttachmentTable
+            return multiSourcePostVideoAttachmentTable
         }
     }
     

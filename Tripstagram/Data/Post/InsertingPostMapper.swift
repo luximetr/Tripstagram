@@ -11,7 +11,7 @@ class InsertingPostMapper {
         case let videoOnlyPost as NetworkVideoOnlyPost:
             return mapToStorage(networkVideoOnlyPost: videoOnlyPost)
         case let multiSourcePost as NetworkMultiSourcePost:
-            return mapToStorage(networkMultiSourcePost: multiSourcePost)
+            return try mapToStorage(networkMultiSourcePost: multiSourcePost)
         default:
             throw Error("Unsupported network post type")
         }
@@ -35,10 +35,11 @@ class InsertingPostMapper {
         return storagePost
     }
     
-    private static func mapToStorage(networkMultiSourcePost: NetworkMultiSourcePost) -> StorageInsertingMultiSourcePost {
-        let storagePost = StorageInsertingMultiSourcePost(
+    private static func mapToStorage(networkMultiSourcePost: NetworkMultiSourcePost) throws -> StorageInsertingMultiSourcePost {
+        let storagePost = try StorageInsertingMultiSourcePost(
             id: networkMultiSourcePost.id,
-            postedAt: networkMultiSourcePost.postedAt
+            postedAt: networkMultiSourcePost.postedAt,
+            sources: networkMultiSourcePost.sources.map({ try PostSourceMapper.mapToStorage(networkPostSource: $0) })
         )
         return storagePost
     }
