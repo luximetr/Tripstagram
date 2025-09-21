@@ -16,9 +16,12 @@ struct FeedScreenView: View {
     
     var body: some View {
         List(viewModel.posts, id: \.id) { postViewModel in
-            if let imagePostViewModel = postViewModel as? ImagePostCellViewModel {
+            switch postViewModel {
+            case let imagePostViewModel as ImagePostCellViewModel:
                 ImagePostCell(post: imagePostViewModel.post, viewModel: imagePostViewModel)
-            } else {
+            case let videoPostViewModel as VideoPostCellViewModel:
+                VideoPostCell(post: videoPostViewModel.post, viewModel: videoPostViewModel)
+            default:
                 Text("Unsupported post type")
             }
         }

@@ -2,19 +2,18 @@ import SwiftUI
 import AVFoundation
 
 struct VideoPostCell: View {
+    
+    @StateObject var viewModel: VideoPostCellViewModel
     let post: VideoOnlyPost
-    @State private var player: AVPlayer
 
-    init(post: VideoOnlyPost) {
+    init(post: VideoOnlyPost, viewModel: VideoPostCellViewModel) {
         self.post = post
-        let player = AVPlayer(url: post.source.url)
-        player.isMuted = true
-        self._player = State(wrappedValue: player)
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
         VStack(spacing: 8) {
-            CustomVideoPlayer(player: player)
+            CustomVideoPlayer(player: viewModel.player)
                 .frame(maxWidth: .infinity)
                 .aspectRatio(1, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -39,10 +38,10 @@ struct VideoPostCell: View {
             }
         }
         .onAppear {
-            player.play()
+            viewModel.onAppear()
         }
         .onDisappear {
-            player.pause()
+            viewModel.onDisappear()
         }
     }
 }

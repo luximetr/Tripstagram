@@ -12,7 +12,8 @@ class ImageOnlyPostSQLiteTable {
                 CREATE TABLE
                 image_only_post(
                     id TEXT PRIMARY KEY,
-                    posted_at INTEGER
+                    posted_at INTEGER,
+                    attachment_remote_url TEXT
                 );
                 """
             let preparedStatement = try sqlite3PrepareV2(databaseConnection, statement)
@@ -37,16 +38,17 @@ class ImageOnlyPostSQLiteTable {
     
     // MARK: - Insert
     
-    func insert(databaseConnection: OpaquePointer, id: String, postedAt: Int64) throws {
+    func insert(databaseConnection: OpaquePointer, id: String, postedAt: Int64, attachmentRemoteURL: String) throws {
         do {
             let statement =
                 """
-                INSERT INTO image_only_post(id, posted_at)
-                VALUES (?, ?);
+                INSERT INTO image_only_post(id, posted_at, attachment_remote_url)
+                VALUES (?, ?, ?);
                 """
             let preparedStatement = try sqlite3PrepareV2(databaseConnection, statement)
             try sqlite3BindText(preparedStatement, 1, id)
             try sqlite3BindInt64(preparedStatement, 2, postedAt)
+            try sqlite3BindText(preparedStatement, 3, attachmentRemoteURL)
             try sqlite3StepDone(preparedStatement)
             try sqlite3Finalize(preparedStatement)
         } catch {
@@ -55,38 +57,6 @@ class ImageOnlyPostSQLiteTable {
     }
     
     // MARK: - Select
-    
-    func select(databaseConnection: OpaquePointer) throws -> [Row] {
-        do {
-            let statement =
-                """
-                SELECT id, posted_at FROM image_only_post;
-                """
-            let preparedStatement = try sqlite3PrepareV2(databaseConnection, statement)
-            var rows: [Row] = []
-            while(try sqlite3StepRow(preparedStatement)) {
-                let row = try extractRow(preparedStatement)
-                rows.append(row)
-            }
-            try sqlite3Finalize(preparedStatement)
-            return rows
-        } catch {
-            throw error
-        }
-    }
-    
-    typealias Row = (id: String, postedAt: Int64)
-    
-    private func extractRow(_ preparedStatement: OpaquePointer) throws -> Row {
-        do {
-            let id = try sqlite3ColumnText(preparedStatement, 0)
-            let postedAt = try sqlite3ColumnInt64(preparedStatement, 1)
-            let expenseSelectedRow = Row(id: id, postedAt: postedAt)
-            return expenseSelectedRow
-        } catch {
-            throw error
-        }
-    }
     
     // MARK: - Update
     

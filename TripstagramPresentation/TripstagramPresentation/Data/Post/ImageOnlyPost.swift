@@ -2,10 +2,10 @@ import Foundation
 
 public struct ImageOnlyPost: Post, Sendable {
     public let id: String
-    public let source: PostImageSource
+    public let attachmentRemoteURL: URL
     
-    public init(id: String, source: PostImageSource) {
+    public init(id: String, attachmentRemoteURL: URL) {
         self.id = id
-        self.source = source
+        self.attachmentRemoteURL = attachmentRemoteURL
     }
 }

@@ -20,7 +20,8 @@ class InsertingPostMapper {
     private static func mapToStorage(networkImageOnlyPost: NetworkImageOnlyPost) -> StorageInsertingImageOnlyPost {
         let storagePost = StorageInsertingImageOnlyPost(
             id: networkImageOnlyPost.id,
-            postedAt: networkImageOnlyPost.postedAt
+            postedAt: networkImageOnlyPost.postedAt,
+            attachmentRemoteURL: networkImageOnlyPost.source.url
         )
         return storagePost
     }
@@ -28,7 +29,8 @@ class InsertingPostMapper {
     private static func mapToStorage(networkVideoOnlyPost: NetworkVideoOnlyPost) -> StorageInsertingVideoOnlyPost {
         let storagePost = StorageInsertingVideoOnlyPost(
             id: networkVideoOnlyPost.id,
-            postedAt: networkVideoOnlyPost.postedAt
+            postedAt: networkVideoOnlyPost.postedAt,
+            attachmentRemoteURL: networkVideoOnlyPost.source.url
         )
         return storagePost
     }

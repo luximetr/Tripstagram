@@ -13,12 +13,16 @@ class FeedScreenViewModel: ObservableObject {
     
     @Published var posts: [any PostCellViewModel] = []
     
+    var onLoadCachedPosts: (() async throws -> [any Post])?
     var onLoadPosts: (() async throws -> [any Post])?
     
     func loadPosts() {
+        guard let onLoadCachedPosts else { return }
         guard let onLoadPosts else { return }
-        Task {
+        Task(priority: .userInitiated) {
             do {
+                let cachedPosts = try await onLoadCachedPosts()
+                updatePosts(cachedPosts)
                 let posts = try await onLoadPosts()
                 updatePosts(posts)
             } catch {
@@ -32,6 +36,7 @@ class FeedScreenViewModel: ObservableObject {
             do {
                 return try createPostViewModel(post: post)
             } catch {
+                print(error)
                 return nil
             }
         })
@@ -42,26 +47,33 @@ class FeedScreenViewModel: ObservableObject {
         switch post {
         case let imageOnlyPost as ImageOnlyPost:
             return createImagePostCellViewModel(post: imageOnlyPost)
+        case let videoOnlyPost as VideoOnlyPost:
+            return createVideoPostCellViewModel(post: videoOnlyPost)
         default:
             throw Error("Unsupported post type")
         }
     }
     
-    var onLoadImageOnlyPostAttachment: ((ImageOnlyPost) async throws -> URL)?
+    var onLoadRemoteImageOnlyPostAttachment: ((ImageOnlyPost) async throws -> URL)?
+    var onGetCachedImageOnlyPostAttachment: ((ImageOnlyPost) throws -> URL?)?
     
     private func createImagePostCellViewModel(post: ImageOnlyPost) -> ImagePostCellViewModel {
         let viewModel = ImagePostCellViewModel(post: post)
-        viewModel.onCacheRemoteImageURL = { [weak self] postId in
+        viewModel.onLoadRemoteImageURL = { [weak self] in
             guard let self else { throw Error.unwrapWeakSelf }
-            guard let onLoadImageOnlyPostAttachment else { throw Error("onLoadImageOnlyPostAttachment is not set")}
-            return try await onLoadImageOnlyPostAttachment(post)
+            guard let onLoadRemoteImageOnlyPostAttachment else { throw Error("onLoadRemoteImageOnlyPostAttachment is not set")}
+            return try await onLoadRemoteImageOnlyPostAttachment(post)
         }
-        viewModel.onLoadCachedImageURL = { [weak self] postId in
+        viewModel.onGetCachedImageURL = { [weak self] in
             guard let self else { throw Error.unwrapWeakSelf }
-            return nil
-//            guard let onLoadImageOnlyPostAttachment else { throw Error("onLoadImageOnlyPostAttachment is not set")}
-//            return try await onLoadImageOnlyPostAttachment(post)
+            guard let onGetCachedImageOnlyPostAttachment else { throw Error("onGetCachedImageOnlyPostAttachment is not set") }
+            return try onGetCachedImageOnlyPostAttachment(post)
         }
+        return viewModel
+    }
+    
+    private func createVideoPostCellViewModel(post: VideoOnlyPost) -> VideoPostCellViewModel {
+        let viewModel = VideoPostCellViewModel(post: post)
         return viewModel
     }
 }

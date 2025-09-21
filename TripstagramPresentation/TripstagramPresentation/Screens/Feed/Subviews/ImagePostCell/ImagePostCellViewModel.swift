@@ -25,23 +25,23 @@ class ImagePostCellViewModel: ObservableObject, @MainActor PostCellViewModel {
     @Published var imageURL: URL?
     
     private func loadImage() {
-        guard let onLoadCachedImageURL = onLoadCachedImageURL else { return }
-        guard let onCacheRemoteImageURL = onCacheRemoteImageURL else { return }
-        if let cachedImageURL = try? onLoadCachedImageURL(post.id) {
+        guard let onGetCachedImageURL = onGetCachedImageURL else { return }
+        guard let onLoadRemoteImageURL = onLoadRemoteImageURL else { return }
+        if let cachedImageURL = try? onGetCachedImageURL() {
             self.imageURL = cachedImageURL
         } else {
             Task {
-                let cachedImageURL = try await onCacheRemoteImageURL(post.id)
-                self.imageURL = cachedImageURL
+                let imageURL = try await onLoadRemoteImageURL()
+                self.imageURL = imageURL
             }
         }
     }
     
     // MARK: - Cached image
     
-    var onLoadCachedImageURL: ((String) throws -> URL?)?
+    var onGetCachedImageURL: (() throws -> URL?)?
     
     // MARK: - Remote image
     
-    var onCacheRemoteImageURL: ((String) async throws -> URL?)?
+    var onLoadRemoteImageURL: (() async throws -> URL?)?
 }

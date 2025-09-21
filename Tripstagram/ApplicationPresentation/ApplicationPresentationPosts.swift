@@ -5,16 +5,17 @@ import TripstagramStorage
 
 extension ApplicationViewModel {
     
-    func presentationGetPosts() async throws -> [any PresentationPost] {
+    func presentationLoadPosts() async throws -> [any PresentationPost] {
         let networkPosts = try await network.getPosts()
         try cachePosts(networkPosts)
-        let presentationPosts = try networkPosts.map({ try PostMapper.mapToPresentation($0) })
+        let presentationPosts = try networkPosts.map({ try PostMapper.mapToPresentation(networkPost: $0) })
         return presentationPosts
     }
     
-    func presentationGetCachedPosts() async throws -> [any PresentationPost] {
+    func presentationLoadCachedPosts() async throws -> [any PresentationPost] {
         let storagePosts = try await storage.fetchAllPosts()
-        return []
+        let presentationPosts = try storagePosts.map({ try PostMapper.mapToPresentation(storagePost: $0) })
+        return presentationPosts
     }
     
     private func cachePosts(_ posts: [any NetworkPost]) throws {
@@ -24,12 +25,14 @@ extension ApplicationViewModel {
         }
     }
     
-    func presentationDownloadImageOnlyPostAttachment(post: PresentationImageOnlyPost) async throws -> URL {
-        let downloadedFile = try await network.downloadFile(remoteURL: post.source.url)
-        return downloadedFile.tempURL
+    func presentationLoadRemoteImageOnlyPostAttachment(post: PresentationImageOnlyPost) async throws -> URL {
+        let networkDownloadedFile = try await network.downloadFile(remoteURL: post.attachmentRemoteURL)
+        let storageDownloadedFile = DownloadedFileMapper.mapToStorage(networkDownloadedFile: networkDownloadedFile)
+        let attachmentURL = try storage.saveImageOnlyPostAttachment(postId: post.id, attachment: storageDownloadedFile)
+        return attachmentURL
     }
     
-    func presentationDownloadPostAttachment(url: URL) -> URL {
-        return url
+    func presentationGetCachedImageOnlyPostAttachment(post: PresentationImageOnlyPost) throws -> URL? {
+        return try storage.getCachedImageOnlyAttachmentURL(postId: post.id)
     }
 }

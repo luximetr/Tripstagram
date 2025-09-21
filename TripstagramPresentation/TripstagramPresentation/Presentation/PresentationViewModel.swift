@@ -9,6 +9,8 @@ public class PresentationViewModel: ObservableObject {
     
     // MARK: - Posts
     
-    public var getPosts: (() async throws -> [any Post])!
-    public var downloadImageOnlyPostAttachment: ((ImageOnlyPost) async throws -> URL)!
+    public var loadPosts: (() async throws -> [any Post])!
+    public var loadCachedPosts: (() async throws -> [any Post])!
+    public var loadRemoteImageOnlyPostAttachment: ((ImageOnlyPost) async throws -> URL)!
+    public var getCachedImageOnlyPostAttachment: ((ImageOnlyPost) throws -> URL?)!
 }

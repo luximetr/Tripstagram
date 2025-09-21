@@ -29,7 +29,8 @@ extension Storage {
             try self.sqliteDatabase().imageOnlyPostTable().insert(
                 databaseConnection: databaseConnection,
                 id: imageOnlyPost.id,
-                postedAt: DateConvertor.toInt64(date: imageOnlyPost.postedAt)
+                postedAt: DateConvertor.toInt64(date: imageOnlyPost.postedAt),
+                attachmentRemoteURL: imageOnlyPost.attachmentRemoteURL.absoluteString
             )
         } catch {
             throw error
@@ -41,7 +42,8 @@ extension Storage {
             try sqliteDatabase().videoOnlyPostTable().insert(
                 databaseConnection: databaseConnection,
                 id: videoOnlyPost.id,
-                postedAt: DateConvertor.toInt64(date: videoOnlyPost.postedAt)
+                postedAt: DateConvertor.toInt64(date: videoOnlyPost.postedAt),
+                attachmentRemoteURL: videoOnlyPost.attachmentRemoteURL.absoluteString
             )
         } catch {
             throw error
@@ -64,7 +66,7 @@ extension Storage {
         return try await performBackgroundReadTask { [weak self] databaseConnection in
             guard let self else { throw Error.unwrapWeakSelf }
             let postRows = try self.sqliteDatabase().getPostsQuery().selectAllOrderByPostedAt(databaseConnection: databaseConnection)
-            let posts = postRows.map({ PostMapper.mapToPost($0) })
+            let posts = try postRows.map({ try PostMapper.mapToPost($0) })
             return posts
         }
     }

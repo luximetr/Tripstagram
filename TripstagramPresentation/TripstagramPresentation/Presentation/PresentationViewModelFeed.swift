@@ -8,11 +8,19 @@ extension PresentationViewModel {
         let viewModel = FeedScreenViewModel()
         viewModel.onLoadPosts = { [weak self] in
             guard let self else { throw Error.unwrapWeakSelf }
-            return try await self.getPosts()
+            return try await self.loadPosts()
         }
-        viewModel.onLoadImageOnlyPostAttachment = { [weak self] post in
+        viewModel.onLoadCachedPosts = { [weak self] in
             guard let self else { throw Error.unwrapWeakSelf }
-            return try await self.downloadImageOnlyPostAttachment(post)
+            return try await self.loadCachedPosts()
+        }
+        viewModel.onLoadRemoteImageOnlyPostAttachment = { [weak self] post in
+            guard let self else { throw Error.unwrapWeakSelf }
+            return try await self.loadRemoteImageOnlyPostAttachment(post)
+        }
+        viewModel.onGetCachedImageOnlyPostAttachment = { [weak self] post in
+            guard let self else { throw Error.unwrapWeakSelf }
+            return try self.getCachedImageOnlyPostAttachment(post)
         }
         let view = FeedScreenView(viewModel: viewModel)
         return view

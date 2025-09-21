@@ -33,7 +33,9 @@ class ApplicationViewModel: ObservableObject {
     private func initializePresentation() {
         presentationViewModel = PresentationViewModel()
         weak var weakSelf = self
-        presentationViewModel.getPosts = weakSelf?.presentationGetPosts
-        presentationViewModel.downloadImageOnlyPostAttachment = weakSelf?.presentationDownloadImageOnlyPostAttachment
+        presentationViewModel.loadPosts = weakSelf?.presentationLoadPosts
+        presentationViewModel.loadCachedPosts = weakSelf?.presentationLoadCachedPosts
+        presentationViewModel.loadRemoteImageOnlyPostAttachment = weakSelf?.presentationLoadRemoteImageOnlyPostAttachment
+        presentationViewModel.getCachedImageOnlyPostAttachment = weakSelf?.presentationGetCachedImageOnlyPostAttachment
     }
 }

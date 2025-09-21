@@ -3,11 +3,5 @@ import Foundation
 public struct VideoOnlyPost: Post {
     public let id: String
     public let postedAt: Date
-    public let source: PostVideoSource
-    
-    public init(id: String, postedAt: Date, source: PostVideoSource) {
-        self.id = id
-        self.postedAt = postedAt
-        self.source = source
-    }
+    public let attachmentRemoteURL: URL
 }

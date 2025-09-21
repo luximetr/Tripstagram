@@ -44,7 +44,7 @@ struct ImagePostCell: View {
 
 #Preview {
     guard let imageURL = URL(string: "https://i.imgur.com/UUiBY.png") else { return Text("Invalid URL") }
-    let post = ImageOnlyPost(id: "1", source: .init(url: imageURL))
+    let post = ImageOnlyPost(id: "1", attachmentRemoteURL: imageURL)
     return ImagePostCell(
         post: post,
         viewModel: ImagePostCellViewModel(post: post)

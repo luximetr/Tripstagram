@@ -2,10 +2,10 @@ import Foundation
 
 public struct VideoOnlyPost: Post {
     public let id: String
-    public let source: PostVideoSource
+    public let attachmentRemoteURL: URL
     
-    public init(id: String, source: PostVideoSource) {
+    public init(id: String, attachmentRemoteURL: URL) {
         self.id = id
-        self.source = source
+        self.attachmentRemoteURL = attachmentRemoteURL
     }
 }

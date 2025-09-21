@@ -63,27 +63,28 @@ extension Storage {
     
     // MARK: - Save
     
-    func saveImageOnlyPostAttachment(postId: String, attachment: DownloadedFile) throws {
+    public func saveImageOnlyPostAttachment(postId: String, attachment: DownloadedFile) throws -> URL {
         let directory = try imageOnlyPostAttachmentsDirectoryURL()
-        try savePostAttachment(postId: postId, attachment: attachment, directory: directory)
+        return try savePostAttachment(postId: postId, attachment: attachment, directory: directory)
     }
     
-    func saveVideoOnlyPostAttachment(postId: String, attachment: DownloadedFile) throws {
+    public func saveVideoOnlyPostAttachment(postId: String, attachment: DownloadedFile) throws -> URL {
         let directory = try videoOnlyPostAttamchntsDirectoryURL()
-        try savePostAttachment(postId: postId, attachment: attachment, directory: directory)
+        return try savePostAttachment(postId: postId, attachment: attachment, directory: directory)
     }
     
-    func saveMultiSourcePostAttachments(postId: String, attachments: [DownloadedFile]) throws {
+    public func saveMultiSourcePostAttachments(postId: String, attachments: [DownloadedFile]) throws {
         let directory = try multiSourcePostAttachmentsDirectoryURL()
-        try saveOrderedPostAttachments(postId: postId, attachments: attachments, directory: directory)
+        return try saveOrderedPostAttachments(postId: postId, attachments: attachments, directory: directory)
     }
     
-    private func savePostAttachment(postId: String, attachment: DownloadedFile, directory: URL) throws {
+    private func savePostAttachment(postId: String, attachment: DownloadedFile, directory: URL) throws -> URL {
         let postDirectoryURL = directory.appendingPathComponent(postId, isDirectory: true)
         try fileManager.createDirectory(at: postDirectoryURL, withIntermediateDirectories: true)
         let filename = attachment.suggestedFilename ?? "\(postId).\(getFileExtension(attachment: attachment))"
         let destinationURL = postDirectoryURL.appendingPathComponent(filename, isDirectory: false)
         try fileManager.moveItem(at: attachment.tempURL, to: destinationURL)
+        return destinationURL
     }
     
     private func saveOrderedPostAttachments(postId: String, attachments: [DownloadedFile], directory: URL) throws {
@@ -99,6 +100,12 @@ extension Storage {
     }
     
     // MARK: - Get
+    
+    public func getCachedImageOnlyAttachmentURL(postId: String) throws -> URL? {
+        let directory = try imageOnlyPostAttachmentsDirectoryURL()
+        let attachmentURL = try getPostSourceURL(byPostId: postId, inDirectory: directory)
+        return attachmentURL
+    }
     
     func getPostOrderedSourceURLs(byPostId postId: String, inDirectory directory: URL) throws -> [URL] {
         var sourceURLs: [URL] = []
@@ -116,7 +123,12 @@ extension Storage {
     }
     
     func getPostSourceURL(byPostId postId: String, inDirectory directory: URL) throws -> URL? {
-        return nil
+        let postDirectoryURL = directory.appending(path: postId)
+        guard fileManager.fileExists(atPath: postDirectoryURL.path) else { return nil }
+        let fileURLs = try fileManager.contentsOfDirectory(at: postDirectoryURL, includingPropertiesForKeys: nil, options: [])
+        guard let firstFileURL = fileURLs.first else { return nil }
+        guard fileManager.fileExists(atPath: firstFileURL.path) else { return nil }
+        return firstFileURL
     }
     
     // MARK: - File extension
