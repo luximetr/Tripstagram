@@ -10,6 +10,10 @@ extension PresentationViewModel {
             guard let self else { throw Error.unwrapWeakSelf }
             return try await self.getPosts()
         }
+        viewModel.onLoadImageOnlyPostAttachment = { [weak self] post in
+            guard let self else { throw Error.unwrapWeakSelf }
+            return try await self.downloadImageOnlyPostAttachment(post)
+        }
         let view = FeedScreenView(viewModel: viewModel)
         return view
     }

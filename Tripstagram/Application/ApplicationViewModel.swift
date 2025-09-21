@@ -34,5 +34,6 @@ class ApplicationViewModel: ObservableObject {
         presentationViewModel = PresentationViewModel()
         weak var weakSelf = self
         presentationViewModel.getPosts = weakSelf?.presentationGetPosts
+        presentationViewModel.downloadImageOnlyPostAttachment = weakSelf?.presentationDownloadImageOnlyPostAttachment
     }
 }

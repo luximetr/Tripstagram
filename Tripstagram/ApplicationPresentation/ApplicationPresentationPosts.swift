@@ -1,4 +1,5 @@
 import Foundation
+import TripstagramPresentation
 import TripstagramNetwork
 import TripstagramStorage
 
@@ -21,6 +22,11 @@ extension ApplicationViewModel {
             let storagePosts = try posts.map({ try InsertingPostMapper.mapToStorage(networkPost: $0) })
             try await storage.insertPosts(storagePosts)
         }
+    }
+    
+    func presentationDownloadImageOnlyPostAttachment(post: PresentationImageOnlyPost) async throws -> URL {
+        let downloadedFile = try await network.downloadFile(remoteURL: post.source.url)
+        return downloadedFile.tempURL
     }
     
     func presentationDownloadPostAttachment(url: URL) -> URL {

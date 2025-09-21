@@ -17,33 +17,6 @@ struct ImagePostCell: View {
             } else {
                 ProgressView()
             }
-            AsyncImage(url: post.source.url) { phase in
-                switch phase {
-                case .empty:
-                    ZStack {
-                        Rectangle().fill(.secondary.opacity(0.15))
-                        ProgressView()
-                    }
-                    .frame(maxWidth: .infinity)
-                    .aspectRatio(1, contentMode: .fit)
-                case .success(let image):
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxWidth: .infinity)
-                case .failure:
-                    ZStack {
-                        Rectangle().fill(.secondary.opacity(0.15))
-                        Image(systemName: "photo")
-                            .imageScale(.large)
-                            .foregroundStyle(.secondary)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .aspectRatio(1, contentMode: .fit)
-                @unknown default:
-                    EmptyView()
-                }
-            }
             HStack {
                 Image(systemName: "heart")
                 Image(systemName: "message")
@@ -62,6 +35,9 @@ struct ImagePostCell: View {
                 Text("12 hours ago")
                 Spacer()
             }
+        }
+        .onAppear {
+            viewModel.onAppear()
         }
     }
 }

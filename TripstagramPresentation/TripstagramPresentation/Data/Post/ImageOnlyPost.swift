@@ -1,6 +1,6 @@
 import Foundation
 
-public struct ImageOnlyPost: Post {
+public struct ImageOnlyPost: Post, Sendable {
     public let id: String
     public let source: PostImageSource
     

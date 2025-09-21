@@ -1,7 +1,7 @@
 import Foundation
 
 @MainActor
-class ImagePostCellViewModel: ObservableObject {
+class ImagePostCellViewModel: ObservableObject, @MainActor PostCellViewModel {
     
     // MARK: - Init
     
@@ -17,6 +17,7 @@ class ImagePostCellViewModel: ObservableObject {
     
     // MARK: - Post
     
+    var id: String { post.id }
     let post: ImageOnlyPost
     
     // MARK: - Image
@@ -26,7 +27,7 @@ class ImagePostCellViewModel: ObservableObject {
     private func loadImage() {
         guard let onLoadCachedImageURL = onLoadCachedImageURL else { return }
         guard let onCacheRemoteImageURL = onCacheRemoteImageURL else { return }
-        if let cachedImageURL = onLoadCachedImageURL(post.id) {
+        if let cachedImageURL = try? onLoadCachedImageURL(post.id) {
             self.imageURL = cachedImageURL
         } else {
             Task {
@@ -38,7 +39,7 @@ class ImagePostCellViewModel: ObservableObject {
     
     // MARK: - Cached image
     
-    var onLoadCachedImageURL: ((String) -> URL?)?
+    var onLoadCachedImageURL: ((String) throws -> URL?)?
     
     // MARK: - Remote image
     
