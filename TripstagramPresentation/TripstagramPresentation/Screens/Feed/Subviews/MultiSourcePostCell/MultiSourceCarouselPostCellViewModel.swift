@@ -13,4 +13,8 @@ class MultiSourceCarouselPostCellViewModel: ObservableObject, @MainActor PostCel
     
     var id: String { post.id }
     let post: MultiSourcePost
+    
+    // MARK: - Carousel
+    
+    @Published var selection: Int = 0
 }

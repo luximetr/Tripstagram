@@ -12,6 +12,10 @@ struct FeedScreenView: View {
     
     @StateObject var viewModel: FeedScreenViewModel
     
+    // MARK: - Appearance
+    
+    @Environment(\.appearance) private var appearance
+    
     // MARK: - Body
     
     var body: some View {
@@ -27,18 +31,9 @@ struct FeedScreenView: View {
                 Text("Unsupported post type")
             }
         }
-//        List(viewModel.posts, id: \.id) { post in
-//            if let imagePost = post as? ImageOnlyPost {
-//                ImagePostCell(post: imagePost, viewModel: ImagePostCellViewModel(post: imagePost))
-//            } else if let video = post as? VideoOnlyPost {
-//                VideoPostCell(post: video)
-//            } else if let multiSource = post as? MultiSourcePost {
-//                MultiSourceCarouselPostCell(post: multiSource)
-//            } else {
-//                Text("Unsupported post type")
-//            }
-//        }
-        .listStyle(.inset)
+        .listStyle(.plain)
+        .background(appearance.colors.primaryBackground)
+        .scrollContentBackground(.hidden)
         .onAppear {
             viewModel.onAppear()
         }
@@ -46,6 +41,9 @@ struct FeedScreenView: View {
 }
 
 #Preview {
+    @Previewable @Environment(\.colorScheme) var colorScheme
     let viewModel = FeedScreenViewModel()
-    FeedScreenView(viewModel: viewModel)
+    
+    return FeedScreenView(viewModel: viewModel)
+        .environment(\.appearance, CompositeAppearance(colorScheme: colorScheme))
 }

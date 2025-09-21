@@ -15,13 +15,14 @@ public class Network {
     // MARK: - Posts
     
     public func getPosts() async throws -> [any Post] {
+        try await Task.sleep(nanoseconds: 500_000_000) 
         return try [
             ImageOnlyPost(id: "imageOnlyPost1", postedAt: Date().addingTimeInterval(-86_400), source: createPostImageSource(urlString: "https://i.imgur.com/96vtL.png")),
             ImageOnlyPost(id: "imageOnlyPost2", postedAt: Date().addingTimeInterval(-43_200), source: createPostImageSource(urlString: "https://i.imgur.com/UUiBY.png")),
             MultiSourcePost(id: "multiSourcePost1", postedAt: Date().addingTimeInterval(-21_600), sources: [
-                createPostImageSource(urlString: "https://i.imgur.com/ZXs3p5F.png"),
+                createPostImageSource(urlString: "https://i.imgur.com/TLT8R.png"),
                 createPostVideoSource(urlString: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"),
-                createPostImageSource(urlString: "https://i.imgur.com/h5T2a8G.jpeg")
+                createPostImageSource(urlString: "https://i.imgur.com/VCvP3.png")
             ]),
             VideoOnlyPost(id: "videoOnlyPost1", postedAt: Date().addingTimeInterval(-10_800), source: try createPostVideoSource(urlString: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")),
             VideoOnlyPost(id: "videoOnlyPost2", postedAt: Date().addingTimeInterval(-3_600), source: try createPostVideoSource(urlString: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"))

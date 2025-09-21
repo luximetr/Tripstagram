@@ -21,6 +21,13 @@ public struct PresentationView: View {
     
     public var body: some View {
         viewModel.createFeedScreenView()
+            .environment(\.appearance, viewModel.appearance)
+            .onAppear {
+                viewModel.setColorScheme(colorScheme)
+            }
+            .onChange(of: colorScheme) {
+                viewModel.setColorScheme(colorScheme)
+            }
     }
 }
 

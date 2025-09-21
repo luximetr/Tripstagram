@@ -2,39 +2,46 @@ import SwiftUI
 import AVFoundation
 
 struct VideoPostCell: View {
-    
-    @StateObject var viewModel: VideoPostCellViewModel
 
+    // MARK: - Init
+    
     init(viewModel: VideoPostCellViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
+    // MARK: - ViewModel
+    
+    @StateObject var viewModel: VideoPostCellViewModel
+    
+    // MARK: - Appearance
+    
+    @Environment(\.appearance) private var appearance
+    
+    // MARK: - Body
+    
     var body: some View {
         VStack(spacing: 8) {
-            CustomVideoPlayer(player: viewModel.player)
+            VideoPlayerView(player: viewModel.player)
                 .frame(maxWidth: .infinity)
-                .aspectRatio(1, contentMode: .fit)
+                .aspectRatio(1.25, contentMode: .fit)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
 
+            PostActionsView()
+                .padding(.vertical, 5)
             HStack {
-                Image(systemName: "heart")
-                Image(systemName: "message")
-                Image(systemName: "arrow.2.squarepath")
-                Image(systemName: "arrowshape.turn.up.forward")
-                Spacer()
-                Image(systemName: "bookmark")
-            }
-            HStack {
-                Text("Comment")
+                Text("Comment...")
+                    .foregroundStyle(appearance.colors.primaryText)
                 Text("more")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(appearance.colors.secondaryText)
                 Spacer()
             }
             HStack {
                 Text("12 hours ago")
+                    .foregroundStyle(appearance.colors.primaryText)
                 Spacer()
             }
         }
+        .listRowBackground(appearance.colors.primaryBackground)
         .onAppear {
             viewModel.onAppear()
         }

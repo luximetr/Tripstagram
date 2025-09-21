@@ -1,7 +1,7 @@
 import UIKit
 import AVFoundation
 
-class PlayerUIView: UIView {
+class VideoPlayerUIView: UIView {
     private var playerLayer: AVPlayerLayer {
         layer as! AVPlayerLayer
     }
