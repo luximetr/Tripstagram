@@ -2,13 +2,18 @@ import SwiftUI
 import AVFoundation
 
 struct MultiSourceCarouselPostCell: View {
-    let post: MultiSourcePost
+    
+    init(viewModel: MultiSourceCarouselPostCellViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
+    @StateObject var viewModel: MultiSourceCarouselPostCellViewModel
     @State private var selection: Int = 0
 
     var body: some View {
         VStack(spacing: 8) {
             TabView(selection: $selection) {
-                ForEach(Array(post.sources.enumerated()), id: \.offset) { index, source in
+                ForEach(Array(viewModel.post.sources.enumerated()), id: \.offset) { index, source in
                     Group {
                         if let imageSource = source as? PostImageSource {
                             AsyncImage(url: imageSource.url) { phase in

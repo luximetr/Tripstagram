@@ -49,6 +49,8 @@ class FeedScreenViewModel: ObservableObject {
             return createImagePostCellViewModel(post: imageOnlyPost)
         case let videoOnlyPost as VideoOnlyPost:
             return createVideoPostCellViewModel(post: videoOnlyPost)
+        case let multiSourcePost as MultiSourcePost:
+            return createMultiSourcePostCellViewModel(post: multiSourcePost)
         default:
             throw Error("Unsupported post type")
         }
@@ -74,6 +76,11 @@ class FeedScreenViewModel: ObservableObject {
     
     private func createVideoPostCellViewModel(post: VideoOnlyPost) -> VideoPostCellViewModel {
         let viewModel = VideoPostCellViewModel(post: post)
+        return viewModel
+    }
+    
+    private func createMultiSourcePostCellViewModel(post: MultiSourcePost) -> MultiSourceCarouselPostCellViewModel {
+        let viewModel = MultiSourceCarouselPostCellViewModel(post: post)
         return viewModel
     }
 }

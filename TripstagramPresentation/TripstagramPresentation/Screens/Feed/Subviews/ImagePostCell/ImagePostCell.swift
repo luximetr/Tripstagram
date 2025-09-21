@@ -1,12 +1,10 @@
 import SwiftUI
 
 struct ImagePostCell: View {
-    let post: ImageOnlyPost
     
     @StateObject var viewModel: ImagePostCellViewModel
     
-    init(post: ImageOnlyPost, viewModel: ImagePostCellViewModel) {
-        self.post = post
+    init(viewModel: ImagePostCellViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
@@ -46,7 +44,6 @@ struct ImagePostCell: View {
     guard let imageURL = URL(string: "https://i.imgur.com/UUiBY.png") else { return Text("Invalid URL") }
     let post = ImageOnlyPost(id: "1", attachmentRemoteURL: imageURL)
     return ImagePostCell(
-        post: post,
         viewModel: ImagePostCellViewModel(post: post)
     )
 }

@@ -4,10 +4,8 @@ import AVFoundation
 struct VideoPostCell: View {
     
     @StateObject var viewModel: VideoPostCellViewModel
-    let post: VideoOnlyPost
 
-    init(post: VideoOnlyPost, viewModel: VideoPostCellViewModel) {
-        self.post = post
+    init(viewModel: VideoPostCellViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
     
