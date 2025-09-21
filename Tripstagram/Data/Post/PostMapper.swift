@@ -127,4 +127,6 @@ typealias StoragePost = TripstagramStorage.Post
 typealias StorageImageOnlyPost = TripstagramStorage.ImageOnlyPost
 typealias StorageInsertingImageOnlyPost = TripstagramStorage.InsertingImageOnlyPost
 typealias StorageVideoOnlyPost = TripstagramStorage.VideoOnlyPost
+typealias StorageInsertingVideoOnlyPost = TripstagramStorage.InsertingVideoOnlyPost
 typealias StorageMultiSourcePost = TripstagramStorage.MultiSourcePost
+typealias StorageInsertingMultiSourcePost = TripstagramStorage.InsertingMultiSourcePost

@@ -87,6 +87,8 @@ class SQLiteDatabase {
             try setupWALAutoCheckpoint(databaseConnection: databaseConnection)
             try beginTransaction(databaseConnection: databaseConnection)
             try imageOnlyPostTable().create(databaseConnection: databaseConnection)
+            try videoOnlyPostTable().create(databaseConnection: databaseConnection)
+            try multiSourcePostTable().create(databaseConnection: databaseConnection)
             try commitTransaction(databaseConnection: databaseConnection)
         } catch let transactionError {
             do {
@@ -180,6 +182,28 @@ class SQLiteDatabase {
             let imageOnlyPostTable = ImageOnlyPostSQLiteTable()
             _imageOnlyPostTable = imageOnlyPostTable
             return imageOnlyPostTable
+        }
+    }
+    
+    private var _videoOnlyPostTable: VideoOnlyPostSQLiteTable?
+    func videoOnlyPostTable() throws -> VideoOnlyPostSQLiteTable {
+        if let videoOnlyPostTable = _videoOnlyPostTable {
+            return videoOnlyPostTable
+        } else {
+            let videoOnlyPostTable = VideoOnlyPostSQLiteTable()
+            _videoOnlyPostTable = videoOnlyPostTable
+            return videoOnlyPostTable
+        }
+    }
+    
+    private var _multiSourcePostTable: MultiSourcePostSQLiteTable?
+    func multiSourcePostTable() throws -> MultiSourcePostSQLiteTable {
+        if let multiSourcePostTable = _multiSourcePostTable {
+            return multiSourcePostTable
+        } else {
+            let multiSourcePostTable = MultiSourcePostSQLiteTable()
+            _multiSourcePostTable = multiSourcePostTable
+            return multiSourcePostTable
         }
     }
     

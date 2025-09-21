@@ -11,13 +11,17 @@ class GetPostsSQLiteQuery {
         var statement = "SELECT '\(imageOnlyPostType)' AS type, id, posted_at" + " \n"
         statement += "FROM image_only_post" + " \n"
         
-//        statement += "UNION ALL" + " \n"
-//        
-//        statement += "SELECT '\(videoOnlyPostType)' AS type, id, posted_at" + " \n"
-//        statement += "FROM video_only_post" + " \n"
+        statement += "UNION ALL" + " \n"
+        
+        statement += "SELECT '\(videoOnlyPostType)' AS type, id, posted_at" + " \n"
+        statement += "FROM video_only_post" + " \n"
+        
+        statement += "UNION ALL" + " \n"
+        
+        statement += "SELECT '\(multiSourcePostType)' AS type, id, posted_at" + " \n"
+        statement += "FROM multi_source_post" + " \n"
         
         let preparedStatement = try sqlite3PrepareV2(databaseConnection, statement)
-//        try sqlite3Bind(preparedStatement, boundValues)
         var selectedRows: [any PostRow] = []
         while(try sqlite3StepRow(preparedStatement)) {
             let selectedRow = extractPostRow(preparedStatement)

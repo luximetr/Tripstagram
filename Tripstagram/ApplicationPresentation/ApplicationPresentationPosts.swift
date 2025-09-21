@@ -19,12 +19,41 @@ extension ApplicationViewModel {
     private func cachePosts(_ posts: [any NetworkPost]) throws {
         for post in posts {
             if let imageOnlyPost = post as? NetworkImageOnlyPost {
+//                Task {
+//                    do {
+//                        let downloadedFile = try await network.downloadFile(remoteURL: imageOnlyPost.source.url)
+//                        let storageDownloadedFile = DownloadedFileMapper.mapToStorage(networkDownloadedFile: downloadedFile)
+//                        let storageImageOnlyPost = StorageInsertingImageOnlyPost(id: post.id, postedAt: post.postedAt, attachment: storageDownloadedFile)
+//                        try await storage.insertPosts([storageImageOnlyPost])
+//                    } catch {
+//                        print(error)
+//                    }
+//                }
+            } else if let videoOnlyPost = post as? NetworkVideoOnlyPost {
                 Task {
                     do {
-                        let downloadedFile = try await network.downloadFile(remoteURL: imageOnlyPost.source.url)
+                        let downloadedFile = try await network.downloadFile(remoteURL: videoOnlyPost.source.url)
                         let storageDownloadedFile = DownloadedFileMapper.mapToStorage(networkDownloadedFile: downloadedFile)
-                        let storageImageOnlyPost = StorageInsertingImageOnlyPost(id: post.id, postedAt: post.postedAt, attachment: storageDownloadedFile)
-                        try await storage.insertPosts([storageImageOnlyPost])
+                        let storageVideoOnlyPost = StorageInsertingVideoOnlyPost(id: post.id, postedAt: post.postedAt, attachment: storageDownloadedFile)
+                        try await storage.insertPosts([storageVideoOnlyPost])
+                    } catch {
+                        print(error)
+                    }
+                }
+            } else if let multiSourcePost = post as? NetworkMultiSourcePost {
+                Task {
+                    do {
+                        var downloadedFiles: [NetworkDownloadedFile] = []
+                        for source in multiSourcePost.sources {
+                            if let imageSource = source as? NetworkPostImageSource {
+                                downloadedFiles.append(try await network.downloadFile(remoteURL: imageSource.url))
+                            } else if let videoSource = source as? NetworkPostVideoSource {
+                                downloadedFiles.append(try await network.downloadFile(remoteURL: videoSource.url))
+                            }
+                        }
+                        let storageDownloadedFiles = downloadedFiles.map({ DownloadedFileMapper.mapToStorage(networkDownloadedFile: $0) })
+                        let storageMultiSourcePost = StorageInsertingMultiSourcePost(id: post.id, postedAt: post.postedAt, attachments: storageDownloadedFiles)
+                        try await storage.insertPosts([storageMultiSourcePost])
                     } catch {
                         print(error)
                     }

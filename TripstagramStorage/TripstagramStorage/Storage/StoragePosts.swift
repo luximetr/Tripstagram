@@ -14,11 +14,13 @@ extension Storage {
     private func insert(databaseConnection: OpaquePointer, post: any InsertingPost) throws {
         switch post {
         case let imageOnlyPost as InsertingImageOnlyPost:
-            try self.insert(databaseConnection: databaseConnection, imageOnlyPost: imageOnlyPost)
-//        case let videoOnlyPost as VideoOnlyPost:
+//            try self.insert(databaseConnection: databaseConnection, imageOnlyPost: imageOnlyPost)
+            break
+        case let videoOnlyPost as InsertingVideoOnlyPost:
 //            try self.insert(databaseConnection: databaseConnection, videoOnlyPost: videoOnlyPost)
-//        case let multiSourcePost as MultiSourcePost:
-//            try self.insert(databaseConnection: databaseConnection, multiSourcePost: multiSourcePost)
+            break
+        case let multiSourcePost as InsertingMultiSourcePost:
+            try self.insert(databaseConnection: databaseConnection, multiSourcePost: multiSourcePost)
         default:
             throw Error("Unsupported post type")
         }
@@ -26,23 +28,41 @@ extension Storage {
     
     private func insert(databaseConnection: OpaquePointer, imageOnlyPost: InsertingImageOnlyPost) throws {
         do {
-//            try self.sqliteDatabase().imageOnlyPostTable().insert(
-//                databaseConnection: databaseConnection,
-//                id: imageOnlyPost.id,
-//                postedAt: DateConvertor.toInt64(date: imageOnlyPost.postedAt)
-//            )
+            try self.sqliteDatabase().imageOnlyPostTable().insert(
+                databaseConnection: databaseConnection,
+                id: imageOnlyPost.id,
+                postedAt: DateConvertor.toInt64(date: imageOnlyPost.postedAt)
+            )
             try saveImageOnlyPostAttachment(postId: imageOnlyPost.id, attachment: imageOnlyPost.attachment)
         } catch {
             throw error
         }
     }
     
-    private func insert(databaseConnection: OpaquePointer, videoOnlyPost: VideoOnlyPost) throws {
-        
+    private func insert(databaseConnection: OpaquePointer, videoOnlyPost: InsertingVideoOnlyPost) throws {
+        do {
+            try sqliteDatabase().videoOnlyPostTable().insert(
+                databaseConnection: databaseConnection,
+                id: videoOnlyPost.id,
+                postedAt: DateConvertor.toInt64(date: videoOnlyPost.postedAt)
+            )
+            try saveVideoOnlyPostAttachment(postId: videoOnlyPost.id, attachment: videoOnlyPost.attachment)
+        } catch {
+            throw error
+        }
     }
     
-    private func insert(databaseConnection: OpaquePointer, multiSourcePost: MultiSourcePost) throws {
-        
+    private func insert(databaseConnection: OpaquePointer, multiSourcePost: InsertingMultiSourcePost) throws {
+        do {
+//            try sqliteDatabase().multiSourcePostTable().insert(
+//                databaseConnection: databaseConnection,
+//                id: multiSourcePost.id,
+//                postedAt: DateConvertor.toInt64(date: multiSourcePost.postedAt)
+//            )
+            try saveMultiSourcePostAttachments(postId: multiSourcePost.id, attachments: multiSourcePost.attachments)
+        } catch {
+            throw error
+        }
     }
     
     public func fetchAllPosts() async throws -> [any Post] {

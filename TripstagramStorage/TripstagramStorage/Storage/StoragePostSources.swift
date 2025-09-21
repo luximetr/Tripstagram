@@ -33,15 +33,69 @@ extension Storage {
         }
     }
     
+    func videoOnlyPostAttamchntsDirectoryURL() throws -> URL {
+        do {
+            if let videoOnlyPostAttachmentsDirectoryURL = _videoOnlyPostAttachmentsDirectoryURL {
+                return videoOnlyPostAttachmentsDirectoryURL
+            } else {
+                let videoOnlyPostAttachmentsDirectoryURL = try postAttachmentsDirectoryURL().appendingPathComponent("VideoOnlyPosts", isDirectory: true)
+                _videoOnlyPostAttachmentsDirectoryURL = videoOnlyPostAttachmentsDirectoryURL
+                return videoOnlyPostAttachmentsDirectoryURL
+            }
+        } catch {
+            throw Error("Unable to construct video-only attachments directory URL\n\(error)")
+        }
+    }
+    
+    func multiSourcePostAttachmentsDirectoryURL() throws -> URL {
+        do {
+            if let multiSourcePostAttachmentsDirectoryURL = _multiSourcePostAttachmentsDirectoryURL {
+                return multiSourcePostAttachmentsDirectoryURL
+            } else {
+                let multiSourcePostAttachmentsDirectoryURL = try postAttachmentsDirectoryURL().appendingPathComponent("MultiSourcePosts", isDirectory: true)
+                _multiSourcePostAttachmentsDirectoryURL = multiSourcePostAttachmentsDirectoryURL
+                return multiSourcePostAttachmentsDirectoryURL
+            }
+        } catch {
+            throw Error("Unable to construct multi-source attachments directory URL\n\(error)")
+        }
+    }
+    
     // MARK: - Save
     
     func saveImageOnlyPostAttachment(postId: String, attachment: DownloadedFile) throws {
         let directory = try imageOnlyPostAttachmentsDirectoryURL()
+        try savePostAttachment(postId: postId, attachment: attachment, directory: directory)
+    }
+    
+    func saveVideoOnlyPostAttachment(postId: String, attachment: DownloadedFile) throws {
+        let directory = try videoOnlyPostAttamchntsDirectoryURL()
+        try savePostAttachment(postId: postId, attachment: attachment, directory: directory)
+    }
+    
+    func saveMultiSourcePostAttachments(postId: String, attachments: [DownloadedFile]) throws {
+        let directory = try multiSourcePostAttachmentsDirectoryURL()
+        try saveOrderedPostAttachments(postId: postId, attachments: attachments, directory: directory)
+    }
+    
+    private func savePostAttachment(postId: String, attachment: DownloadedFile, directory: URL) throws {
         let postDirectoryURL = directory.appendingPathComponent(postId, isDirectory: true)
         try fileManager.createDirectory(at: postDirectoryURL, withIntermediateDirectories: true)
         let filename = attachment.suggestedFilename ?? "\(postId).\(getFileExtension(attachment: attachment))"
         let destinationURL = postDirectoryURL.appendingPathComponent(filename, isDirectory: false)
         try fileManager.moveItem(at: attachment.tempURL, to: destinationURL)
+    }
+    
+    private func saveOrderedPostAttachments(postId: String, attachments: [DownloadedFile], directory: URL) throws {
+        let postDirectoryURL = directory.appendingPathComponent(postId, isDirectory: true)
+        try fileManager.createDirectory(at: postDirectoryURL, withIntermediateDirectories: true)
+        for (index, attachment) in attachments.enumerated() {
+            let filename = attachment.suggestedFilename ?? "\(postId).\(getFileExtension(attachment: attachment))"
+            let orderNumberDirectory = postDirectoryURL.appendingPathComponent("\(index)", isDirectory: true)
+            try fileManager.createDirectory(at: orderNumberDirectory, withIntermediateDirectories: true)
+            let destinationURL = orderNumberDirectory.appendingPathComponent(filename, isDirectory: false)
+            try fileManager.moveItem(at: attachment.tempURL, to: destinationURL)
+        }
     }
     
     // MARK: - Get
