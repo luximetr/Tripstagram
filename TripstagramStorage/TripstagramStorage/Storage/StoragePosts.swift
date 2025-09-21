@@ -14,11 +14,9 @@ extension Storage {
     private func insert(databaseConnection: OpaquePointer, post: any InsertingPost) throws {
         switch post {
         case let imageOnlyPost as InsertingImageOnlyPost:
-//            try self.insert(databaseConnection: databaseConnection, imageOnlyPost: imageOnlyPost)
-            break
+            try self.insert(databaseConnection: databaseConnection, imageOnlyPost: imageOnlyPost)
         case let videoOnlyPost as InsertingVideoOnlyPost:
-//            try self.insert(databaseConnection: databaseConnection, videoOnlyPost: videoOnlyPost)
-            break
+            try self.insert(databaseConnection: databaseConnection, videoOnlyPost: videoOnlyPost)
         case let multiSourcePost as InsertingMultiSourcePost:
             try self.insert(databaseConnection: databaseConnection, multiSourcePost: multiSourcePost)
         default:
@@ -33,7 +31,6 @@ extension Storage {
                 id: imageOnlyPost.id,
                 postedAt: DateConvertor.toInt64(date: imageOnlyPost.postedAt)
             )
-            try saveImageOnlyPostAttachment(postId: imageOnlyPost.id, attachment: imageOnlyPost.attachment)
         } catch {
             throw error
         }
@@ -46,7 +43,6 @@ extension Storage {
                 id: videoOnlyPost.id,
                 postedAt: DateConvertor.toInt64(date: videoOnlyPost.postedAt)
             )
-            try saveVideoOnlyPostAttachment(postId: videoOnlyPost.id, attachment: videoOnlyPost.attachment)
         } catch {
             throw error
         }
@@ -54,12 +50,11 @@ extension Storage {
     
     private func insert(databaseConnection: OpaquePointer, multiSourcePost: InsertingMultiSourcePost) throws {
         do {
-//            try sqliteDatabase().multiSourcePostTable().insert(
-//                databaseConnection: databaseConnection,
-//                id: multiSourcePost.id,
-//                postedAt: DateConvertor.toInt64(date: multiSourcePost.postedAt)
-//            )
-            try saveMultiSourcePostAttachments(postId: multiSourcePost.id, attachments: multiSourcePost.attachments)
+            try sqliteDatabase().multiSourcePostTable().insert(
+                databaseConnection: databaseConnection,
+                id: multiSourcePost.id,
+                postedAt: DateConvertor.toInt64(date: multiSourcePost.postedAt)
+            )
         } catch {
             throw error
         }

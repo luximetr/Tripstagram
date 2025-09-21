@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 public class PresentationViewModel: ObservableObject {
     
     public init() {
@@ -8,5 +9,5 @@ public class PresentationViewModel: ObservableObject {
     
     // MARK: - Posts
     
-    public var getPosts: (() async throws -> [any Post])?
+    public var getPosts: (() async throws -> [any Post])!
 }

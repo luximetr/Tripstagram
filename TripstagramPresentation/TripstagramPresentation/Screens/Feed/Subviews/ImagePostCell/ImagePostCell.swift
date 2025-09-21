@@ -1,0 +1,76 @@
+import SwiftUI
+
+struct ImagePostCell: View {
+    let post: ImageOnlyPost
+    
+    @StateObject var viewModel: ImagePostCellViewModel
+    
+    init(post: ImageOnlyPost, viewModel: ImagePostCellViewModel) {
+        self.post = post
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+    
+    var body: some View {
+        VStack {
+            if let imageURL = viewModel.imageURL {
+                LocalImageView(fileURL: imageURL)
+            } else {
+                ProgressView()
+            }
+            AsyncImage(url: post.source.url) { phase in
+                switch phase {
+                case .empty:
+                    ZStack {
+                        Rectangle().fill(.secondary.opacity(0.15))
+                        ProgressView()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .aspectRatio(1, contentMode: .fit)
+                case .success(let image):
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: .infinity)
+                case .failure:
+                    ZStack {
+                        Rectangle().fill(.secondary.opacity(0.15))
+                        Image(systemName: "photo")
+                            .imageScale(.large)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .aspectRatio(1, contentMode: .fit)
+                @unknown default:
+                    EmptyView()
+                }
+            }
+            HStack {
+                Image(systemName: "heart")
+                Image(systemName: "message")
+                Image(systemName: "arrow.2.squarepath")
+                Image(systemName: "arrowshape.turn.up.forward")
+                Spacer()
+                Image(systemName: "bookmark")
+            }
+            HStack {
+                Text("Comment")
+                Text("more")
+                    .foregroundStyle(.secondary)
+                Spacer()
+            }
+            HStack {
+                Text("12 hours ago")
+                Spacer()
+            }
+        }
+    }
+}
+
+#Preview {
+    guard let imageURL = URL(string: "https://i.imgur.com/UUiBY.png") else { return Text("Invalid URL") }
+    let post = ImageOnlyPost(id: "1", source: .init(url: imageURL))
+    return ImagePostCell(
+        post: post,
+        viewModel: ImagePostCellViewModel(post: post)
+    )
+}
